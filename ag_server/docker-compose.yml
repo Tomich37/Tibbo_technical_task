@@ -1,0 +1,14 @@
+version: '3'
+services:
+  ag_server:
+    build: 
+      context: .
+    container_name: ag_server
+    restart: always
+    network_mode: host
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    tmpfs:
+      - /run
+    command: ["/usr/sbin/init"]
