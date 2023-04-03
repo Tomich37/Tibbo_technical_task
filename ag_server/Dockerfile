@@ -6,11 +6,22 @@ RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|
 
 RUN dnf -y update
 RUN yum -y install java
-
-COPY aggregate_core_6.20.00_unix-x64.sh /home/
+RUN yum -y install expect
 
 RUN dnf -y install java-1.8.0-openjdk-devel
-RUN dnf -y install xorg-x11-server-Xvfb libXrender.x86_64 libXtst.x86_64
+RUN yum install -y xorg-x11-server-Xvfb
+RUN yum install -y libXrender.x86_64
+RUN yum install -y libXtst.x86_64
+RUN yum install -y which
+
+COPY aggregate_core_6.20.00_unix-x64.sh /home/aggregate_core_6.20.00_unix-x64.sh
+COPY install.sh /home/install.sh
+# RUN echo -e "\n" | bash /home/aggregate_core_6.20.00_unix-x64.sh
+
+# RUN chmod +x /home/install.sh
+# RUN /home/install.sh
+# RUN chmod +x /home/aggregate_core_6.20.00_unix-x64.sh
+# RUN expect -c 'spawn bash /home/aggregate_core_6.20.00_unix-x64.sh; expect "Please select a language" { send "2\n" }; expect "OK [o, Enter], Cancel [c]" {send "2\r"; exp_continue }'
 
 RUN dnf -y upgrade
 
@@ -20,8 +31,4 @@ RUN ssh-keygen -A && \
     sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     echo "root:root" | chpasswd
 
-EXPOSE 22
-EXPOSE 80
-EXPOSE 443
-
-CMD ["/usr/sbin/init"]
+CMD xvfb-run --auto-servernum ./ag_server -r

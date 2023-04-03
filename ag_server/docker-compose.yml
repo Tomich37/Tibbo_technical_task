@@ -12,3 +12,16 @@ services:
     tmpfs:
       - /run
     command: ["/usr/sbin/init"]
+
+  web:
+    image: ag_server
+    ports:
+      - "6460"
+      - "8080"
+      - "6480"
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
